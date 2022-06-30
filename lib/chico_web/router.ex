@@ -17,7 +17,7 @@ defmodule ChicoWeb.Router do
   scope "/", ChicoWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", JournalLive
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,51 @@
+<section class="bg-white px-2">
+  <div class="max-w-3xl mx-auto">
+    <%= if Journals.journal_entry_completed?(@today) do %>
+      <div class="text-center text-xl">All done for today. See you tomorrow.</div>
+    <% end %>
+
+    <%= if Journals.journal_entry_not_started?(@today) do %>
+      <form action="">
+        <div>
+          <label class="sr-only">Check-in</label>
+          <textarea class="bg-gray-50 border-none h-48 resize-none rounded text-xl w-full placeholder:text-gray-400" 
+                    placeholder="What&rsquo;s the plan for today?"></textarea>
+        </div>
+        <div>
+          <button type="submit" class="border-2 border-gray-300 px-4 py-3 rounded text-gray-700">Check-in</button>
+        </div>
+      </form>
+    <% end %>
+
+    <%= if Journals.journal_entry_in_progress?(@today) do %>
+      <div>
+        <p>Here is some text that I wrote this morning, detailing my hopes and dreams for the day.</p>
+        <p>There's a decent chance it didn't go to plan.</p>
+      </div>
+
+      <form action="">
+        <div>
+          <label class="sr-only">Check-out</label>
+          <textarea class="bg-gray-50 border-none h-48 resize-none rounded text-xl w-full placeholder:text-gray-400" 
+                    placeholder="How was today?"></textarea>
+        </div>
+        <div>
+          <button type="submit" class="border-2 border-gray-300 px-4 py-3 rounded text-gray-700">Check-out</button>
+        </div>
+      </form>
+    <% end %>
+  </div>
+</section>
+
+<section>
+  <article>
+    <header>
+      <time datetime="2022-06-26">26th June, 2022</time>
+    </header>
+
+    <div class="main">
+      <div class="check_in">This is the message of hope.</div>
+      <div class="check_out">This is the end, my only friend, the end.</div>
+    </div>
+  </article>
+</section>
