@@ -1,5 +1,19 @@
 defmodule Chico.Journals do
+  alias Chico.Repo
   alias ChicoSchemas.JournalEntry
+
+  @doc """
+  Returns today's journal entry.
+
+  Returns a previously created journal entry if one exists, or an empty JournalEntry struct.
+  """
+  @spec get_current_journal_entry() :: JournalEntry.t()
+  def get_current_journal_entry() do
+    case Repo.get_by(JournalEntry, date: Date.utc_today()) do
+      nil -> %JournalEntry{}
+      journal_entry -> journal_entry
+    end
+  end
 
   @doc """
   Returns a boolean indicating whether the given journal entry is complete.
