@@ -19,19 +19,19 @@ defmodule ChicoSchemas.JournalEntry do
   end
 
   @doc """
-  Returns a changeset for creating a new journal entry.
+  Returns a changeset for "starting" a journal entry.
 
   ## Examples
 
-    iex> changeset = JournalEntry.new_changeset(%JournalEntry{}, %{check_in: "Hola, chico", date: Date.utc_today()})
+    iex> changeset = JournalEntry.check_in_changeset(%JournalEntry{}, %{check_in: "Hola, chico", date: Date.utc_today()})
     iex> %Ecto.Changeset{data: %JournalEntry{}, valid?: true} = changeset
 
-    iex> changeset = JournalEntry.new_changeset(%JournalEntry{}, %{})
+    iex> changeset = JournalEntry.check_in_changeset(%JournalEntry{}, %{})
     iex> %Ecto.Changeset{data: %JournalEntry{}, valid?: false} = changeset
 
   """
-  @spec new_changeset(__MODULE__.t(), map()) :: Ecto.Changeset.t()
-  def new_changeset(%__MODULE__{} = journal_entry, params \\ %{}) do
+  @spec check_in_changeset(__MODULE__.t(), map()) :: Ecto.Changeset.t()
+  def check_in_changeset(%__MODULE__{} = journal_entry, params \\ %{}) do
     journal_entry
     |> cast(params, [:check_in, :date])
     |> validate_required([:check_in, :date])

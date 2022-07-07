@@ -5,17 +5,18 @@ defmodule ChicoSchemas.JournalEntryTest do
 
   doctest(ChicoSchemas.JournalEntry)
 
-  describe "new_changeset/2" do
+  describe "check_in_changeset/2" do
     @attrs %{check_in: "Top of the morning.", date: Date.utc_today()}
 
     test "it returns a valid changeset when given valid data" do
-      assert %Ecto.Changeset{valid?: true} = JournalEntry.new_changeset(%JournalEntry{}, @attrs)
+      assert %Ecto.Changeset{valid?: true} =
+               JournalEntry.check_in_changeset(%JournalEntry{}, @attrs)
     end
 
     test "check_in is required" do
       attrs = Map.delete(@attrs, :check_in)
 
-      changeset = JournalEntry.new_changeset(%JournalEntry{}, attrs)
+      changeset = JournalEntry.check_in_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
       assert %{check_in: ["can't be blank"]} = errors_on(changeset)
@@ -24,7 +25,7 @@ defmodule ChicoSchemas.JournalEntryTest do
     test "check_in cannot be empty" do
       attrs = %{@attrs | check_in: ""}
 
-      changeset = JournalEntry.new_changeset(%JournalEntry{}, attrs)
+      changeset = JournalEntry.check_in_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
       assert %{check_in: ["can't be blank"]} = errors_on(changeset)
@@ -33,7 +34,7 @@ defmodule ChicoSchemas.JournalEntryTest do
     test "check_out is ignored" do
       attrs = Map.put(@attrs, :check_out, "Cool your heels, daddy-o")
 
-      changeset = JournalEntry.new_changeset(%JournalEntry{}, attrs)
+      changeset = JournalEntry.check_in_changeset(%JournalEntry{}, attrs)
 
       refute Map.has_key?(changeset.changes, :check_out)
     end
@@ -41,7 +42,7 @@ defmodule ChicoSchemas.JournalEntryTest do
     test "date is required" do
       attrs = Map.delete(@attrs, :date)
 
-      changeset = JournalEntry.new_changeset(%JournalEntry{}, attrs)
+      changeset = JournalEntry.check_in_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
       assert %{date: ["can't be blank"]} = errors_on(changeset)
@@ -50,7 +51,7 @@ defmodule ChicoSchemas.JournalEntryTest do
     test "date must be a date" do
       attrs = %{@attrs | date: "today"}
 
-      changeset = JournalEntry.new_changeset(%JournalEntry{}, attrs)
+      changeset = JournalEntry.check_in_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
       assert %{date: ["is invalid"]} = errors_on(changeset)
@@ -63,7 +64,7 @@ defmodule ChicoSchemas.JournalEntryTest do
       insert(:journal_entry, date: date)
 
       {:error, changeset} =
-        JournalEntry.new_changeset(%JournalEntry{}, attrs) |> Chico.Repo.insert()
+        JournalEntry.check_in_changeset(%JournalEntry{}, attrs) |> Chico.Repo.insert()
 
       assert %{date: ["has already been taken"]} = errors_on(changeset)
     end
