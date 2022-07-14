@@ -69,4 +69,31 @@ defmodule ChicoSchemas.JournalEntryTest do
       assert %{date: ["has already been taken"]} = errors_on(changeset)
     end
   end
+
+  describe "check_out_changeset/2" do
+    @attrs %{check_out: "End of the evening."}
+
+    test "it returns a valid changeset when given valid data" do
+      assert %Ecto.Changeset{valid?: true} =
+               JournalEntry.check_out_changeset(%JournalEntry{}, @attrs)
+    end
+
+    test "check_out is required" do
+      attrs = Map.delete(@attrs, :check_out)
+
+      changeset = JournalEntry.check_out_changeset(%JournalEntry{}, attrs)
+
+      refute changeset.valid?
+      assert %{check_out: ["can't be blank"]} = errors_on(changeset)
+    end
+
+    test "check_out cannot be empty" do
+      attrs = %{@attrs | check_out: ""}
+
+      changeset = JournalEntry.check_out_changeset(%JournalEntry{}, attrs)
+
+      refute changeset.valid?
+      assert %{check_out: ["can't be blank"]} = errors_on(changeset)
+    end
+  end
 end
