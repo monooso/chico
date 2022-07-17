@@ -5,47 +5,60 @@
     <% end %>
 
     <%= if Journals.journal_entry_not_started?(@today) do %>
-      <form action="">
+      <.form let={f} for={@changeset}, phx_submit="check_in">
         <div>
-          <label class="sr-only">Check-in</label>
-          <textarea class="bg-gray-50 border-none h-48 resize-none rounded text-xl w-full placeholder:text-gray-400" 
-                    placeholder="What&rsquo;s the plan for today?"></textarea>
+          <%= label f, :check_in, "Check-in", class: "sr-only" %>
+          <%= textarea f,
+                :check_in, 
+                class: "bg-gray-50 border-none h-48 resize-none rounded text-xl w-full placeholder:text-gray-400", 
+                placeholder: "What's the plan for today?"
+          %>
+          <%= error_tag f, :check_in %>
         </div>
         <div>
-          <button type="submit" class="border-2 border-gray-300 px-4 py-3 rounded text-gray-700">Check-in</button>
+          <%= submit "Check-in",
+                class: "border-2 border-gray-300 px-4 py-3 rounded text-gray-700",
+                phx_disable_with: "Saving..."
+          %>
         </div>
-      </form>
+      </.form>
     <% end %>
 
     <%= if Journals.journal_entry_in_progress?(@today) do %>
-      <div>
-        <p>Here is some text that I wrote this morning, detailing my hopes and dreams for the day.</p>
-        <p>There's a decent chance it didn't go to plan.</p>
-      </div>
+      <div><%= @today.check_in %></div>
 
-      <form action="">
+      <.form let={f} for={@changeset}, phx_submit="check_out">
         <div>
-          <label class="sr-only">Check-out</label>
-          <textarea class="bg-gray-50 border-none h-48 resize-none rounded text-xl w-full placeholder:text-gray-400" 
-                    placeholder="How was today?"></textarea>
+          <%= label f, :check_in, "Check-out", class: "sr-only" %>
+          <%= textarea f,
+                :check_out, 
+                class: "bg-gray-50 border-none h-48 resize-none rounded text-xl w-full placeholder:text-gray-400", 
+                placeholder: "How was today?"
+          %>
+          <%= error_tag f, :check_out %>
         </div>
         <div>
-          <button type="submit" class="border-2 border-gray-300 px-4 py-3 rounded text-gray-700">Check-out</button>
+          <%= submit "Check-out",
+                class: "border-2 border-gray-300 px-4 py-3 rounded text-gray-700",
+                phx_disable_with: "Saving..."
+          %>
         </div>
-      </form>
+      </.form>
     <% end %>
   </div>
 </section>
 
 <section>
-  <article>
-    <header>
-      <time datetime="2022-06-26">26th June, 2022</time>
-    </header>
+  <%= for journal_entry <- @history do %>
+    <article>
+      <header>
+        <time datetime={journal_entry.date}><%= Calendar.strftime(journal_entry.date, "%d %b, %Y") %></time>
+      </header>
 
-    <div class="main">
-      <div class="check_in">This is the message of hope.</div>
-      <div class="check_out">This is the end, my only friend, the end.</div>
-    </div>
-  </article>
+      <div class="main">
+        <div class="check_in"><%= journal_entry.check_in %></div>
+        <div class="check_out"><%= journal_entry.check_out %></div>
+      </div>
+    </article>
+  <% end %>
 </section>
