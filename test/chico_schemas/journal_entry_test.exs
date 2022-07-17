@@ -96,4 +96,24 @@ defmodule ChicoSchemas.JournalEntryTest do
       assert %{check_out: ["can't be blank"]} = errors_on(changeset)
     end
   end
+
+  describe "base_query/1" do
+    test "it returns an Ecto.Query struct" do
+      assert %Ecto.Query{} = JournalEntry.base_query()
+    end
+  end
+
+  describe "where_completed/1" do
+    test "it limits results to completed journal entries" do
+      entry_id = insert(:journal_entry) |> Map.get(:id)
+
+      # Red herring.
+      insert(:open_journal_entry)
+
+      entries = JournalEntry.base_query() |> JournalEntry.where_completed() |> Repo.all()
+
+      assert 1 = Enum.count(entries)
+      assert %JournalEntry{id: ^entry_id} = Enum.at(entries, 0)
+    end
+  end
 end

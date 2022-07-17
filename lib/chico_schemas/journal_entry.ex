@@ -1,6 +1,7 @@
 defmodule ChicoSchemas.JournalEntry do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query, only: [from: 2]
 
   @type t() :: %__MODULE__{
           check_in: String.t() | nil,
@@ -56,4 +57,17 @@ defmodule ChicoSchemas.JournalEntry do
     |> cast(params, [:check_out])
     |> validate_required([:check_out])
   end
+
+  @doc """
+  Returns a base query, used by all other query functions.
+  """
+  @spec base_query() :: Ecto.Query.t()
+  def base_query(), do: from(e in __MODULE__, as: :journal_entry)
+
+  @doc """
+  Restricts results to completed journal entries.
+  """
+  @spec where_completed(Ecto.Query.t()) :: Ecto.Query.t()
+  def where_completed(query),
+    do: from([journal_entry: journal_entry] in query, where: not is_nil(journal_entry.check_out))
 end
