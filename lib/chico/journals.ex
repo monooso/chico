@@ -25,6 +25,17 @@ defmodule Chico.Journals do
     |> JournalEntry.check_out_changeset(params)
     |> Repo.update()
   end
+
+  @doc """
+  Returns a list of completed journal entries.
+  """
+  @spec get_completed_journal_entries() :: [JournalEntry.t()]
+  def get_completed_journal_entries() do
+    JournalEntry.base_query()
+    |> JournalEntry.where_completed()
+    |> Repo.all()
+  end
+
   @doc """
   Returns today's journal entry.
 

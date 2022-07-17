@@ -39,6 +39,21 @@ defmodule Chico.JournalsTest do
       end)
     end
   end
+
+  describe "get_completed_journal_entries/0" do
+    test "it returns a list of completed journal entries" do
+      insert_list(3, :journal_entry)
+
+      assert 3 = Journals.get_completed_journal_entries() |> Enum.count()
+    end
+
+    test "it does not include open journal entries" do
+      insert(:open_journal_entry)
+
+      assert true = Journals.get_completed_journal_entries() |> Enum.empty?()
+    end
+  end
+
   describe "get_current_journal_entry/0" do
     test "it returns the journal entry for today, if one exists" do
       journal_entry = insert(:journal_entry, date: Date.utc_today())
