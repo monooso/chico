@@ -3,8 +3,6 @@ defmodule ChicoSchemas.JournalEntryTest do
   import Chico.Factory
   alias ChicoSchemas.JournalEntry
 
-  doctest(ChicoSchemas.JournalEntry)
-
   describe "check_in_changeset/2" do
     @attrs %{check_in: "Top of the morning.", date: Date.utc_today()}
 

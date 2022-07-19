@@ -21,15 +21,6 @@ defmodule ChicoSchemas.JournalEntry do
 
   @doc """
   Returns a changeset for "starting" a journal entry.
-
-  ## Examples
-
-    iex> changeset = JournalEntry.check_in_changeset(%JournalEntry{}, %{check_in: "Hola, chico", date: Date.utc_today()})
-    iex> %Ecto.Changeset{data: %JournalEntry{}, valid?: true} = changeset
-
-    iex> changeset = JournalEntry.check_in_changeset(%JournalEntry{}, %{})
-    iex> %Ecto.Changeset{data: %JournalEntry{}, valid?: false} = changeset
-
   """
   @spec check_in_changeset(__MODULE__.t(), map()) :: Ecto.Changeset.t()
   def check_in_changeset(%__MODULE__{} = journal_entry, params \\ %{}) do
@@ -41,15 +32,6 @@ defmodule ChicoSchemas.JournalEntry do
 
   @doc """
   Returns a changeset for "ending" a journal entry.
-
-  ## Examples
-
-    iex> changeset = JournalEntry.check_out_changeset(%JournalEntry{}, %{check_out: "Adios, chico"})
-    iex> %Ecto.Changeset{data: %JournalEntry{}, valid?: true} = changeset
-
-    iex> changeset = JournalEntry.check_out_changeset(%JournalEntry{}, %{})
-    iex> %Ecto.Changeset{data: %JournalEntry{}, valid?: false} = changeset
-
   """
   @spec check_out_changeset(__MODULE__.t(), map()) :: Ecto.Changeset.t()
   def check_out_changeset(%__MODULE__{} = journal_entry, params \\ %{}) do
