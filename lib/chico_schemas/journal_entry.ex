@@ -8,13 +8,15 @@ defmodule ChicoSchemas.JournalEntry do
           check_out: String.t() | nil,
           date: Date.t() | nil,
           inserted_at: DateTime.t() | nil,
-          updated_at: DateTime.t() | nil
+          updated_at: DateTime.t() | nil,
+          user: Chico.Accounts.User.t() | Ecto.Association.NotLoaded.t()
         }
 
   schema "journal_entries" do
     field :check_in, :string
     field :check_out, :string
     field :date, :date
+    belongs_to :user, Chico.Accounts.User
 
     timestamps()
   end
@@ -25,9 +27,10 @@ defmodule ChicoSchemas.JournalEntry do
   @spec check_in_changeset(__MODULE__.t(), map()) :: Ecto.Changeset.t()
   def check_in_changeset(%__MODULE__{} = journal_entry, params \\ %{}) do
     journal_entry
-    |> cast(params, [:check_in, :date])
-    |> validate_required([:check_in, :date])
+    |> cast(params, [:check_in, :date, :user_id])
+    |> validate_required([:check_in, :date, :user_id])
     |> unique_constraint([:date])
+    |> assoc_constraint(:user)
   end
 
   @doc """
