@@ -2,9 +2,7 @@ defmodule Chico.JournalsTest do
   use Chico.DataCase, async: true
   import Chico.Factory
   alias Chico.Journals
-  alias ChicoSchemas.JournalEntry
-
-  doctest(ChicoSchemas.JournalEntry)
+  alias Chico.Journals.JournalEntry
 
   describe "check_in/1" do
     @attrs %{check_in: "Hola", date: Date.utc_today()}

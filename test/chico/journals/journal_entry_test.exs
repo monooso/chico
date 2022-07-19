@@ -1,7 +1,7 @@
-defmodule ChicoSchemas.JournalEntryTest do
+defmodule Chico.Journals.JournalEntryTest do
   use Chico.DataCase, async: true
   import Chico.Factory
-  alias ChicoSchemas.JournalEntry
+  alias Chico.Journals.JournalEntry
 
   describe "check_in_changeset/2" do
     setup do

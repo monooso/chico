@@ -1,6 +1,6 @@
 defmodule Chico.Journals do
   alias Chico.Repo
-  alias ChicoSchemas.JournalEntry
+  alias Chico.Journals.JournalEntry
 
   @type ok_tuple() :: {:ok, JournalEntry.t()}
   @type error_tuple() :: {:error, Ecto.Changeset.t()}

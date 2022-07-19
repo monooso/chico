@@ -1,4 +1,4 @@
-defmodule ChicoSchemas.JournalEntry do
+defmodule Chico.Journals.JournalEntry do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query, only: [from: 2]
