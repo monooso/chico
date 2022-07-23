@@ -1,4 +1,8 @@
 defmodule Chico.Journals.JournalEntry do
+  @moduledoc """
+  Schema and functions for working with journal entries.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query, only: [from: 2]

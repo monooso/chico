@@ -1,4 +1,8 @@
 defmodule Chico.Factory do
+  @moduledoc """
+  Functions to generate test data.
+  """
+
   use ExMachina.Ecto, repo: Chico.Repo
 
   def journal_entry_factory do

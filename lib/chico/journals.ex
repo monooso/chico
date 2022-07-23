@@ -1,4 +1,8 @@
 defmodule Chico.Journals do
+  @moduledoc """
+  Functions for working with journals and journal entries.
+  """
+
   alias Chico.Repo
   alias Chico.Journals.JournalEntry
 

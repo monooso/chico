@@ -1,4 +1,8 @@
 defmodule Chico.Journals.JournalEntryGuards do
+  @moduledoc """
+  Guard functions for working with journal entries.
+  """
+
   alias Chico.Journals.JournalEntry
 
   @doc """

@@ -1,4 +1,6 @@
 defmodule Chico.Accounts.UserNotifier do
+  @moduledoc false
+
   import Swoosh.Email
 
   alias Chico.Mailer
