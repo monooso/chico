@@ -5,12 +5,15 @@ defmodule Chico.Journals.JournalEntryTest do
 
   describe "check_in_changeset/2" do
     setup do
+      user = insert(:user)
+
       [
         attrs: %{
           check_in: "Top of the morning.",
           date: Date.utc_today(),
-          user_id: insert(:user) |> Map.get(:id)
-        }
+          user_id: user.id
+        },
+        user: user
       ]
     end
 
@@ -20,7 +23,23 @@ defmodule Chico.Journals.JournalEntryTest do
     end
 
     test "insert works when given valid data", %{attrs: attrs} do
-      {:ok, _entry} =
+      {:ok, %JournalEntry{}} =
+        JournalEntry.check_in_changeset(%JournalEntry{}, attrs) |> Chico.Repo.insert()
+    end
+
+    test "insert works if there is a journal entry for the given date belonging to a different user",
+         %{attrs: attrs} do
+      insert(:journal_entry, date: attrs.date)
+
+      {:ok, %JournalEntry{}} =
+        JournalEntry.check_in_changeset(%JournalEntry{}, attrs) |> Chico.Repo.insert()
+    end
+
+    test "insert works if there is a journal entry for the given user on a different date",
+         %{attrs: attrs, user: user} do
+      insert(:journal_entry, date: Date.add(attrs.date, -1), user: user)
+
+      {:ok, %JournalEntry{}} =
         JournalEntry.check_in_changeset(%JournalEntry{}, attrs) |> Chico.Repo.insert()
     end
 
@@ -86,12 +105,11 @@ defmodule Chico.Journals.JournalEntryTest do
       assert %{user: ["does not exist"]} = errors_on(changeset)
     end
 
-    test "insert returns a changeset error if there is already a journal entry for the given date",
-         %{attrs: attrs} do
-      date = Date.add(Date.utc_today(), Enum.random(-100..0))
-      attrs = %{attrs | date: date}
+    test "insert returns a changeset error if there is already a journal entry for the given date and user",
+         %{attrs: attrs, user: user} do
+      attrs = %{attrs | date: Date.add(Date.utc_today(), Enum.random(-100..0))}
 
-      insert(:journal_entry, date: date)
+      insert(:journal_entry, date: attrs.date, user: user)
 
       {:error, changeset} =
         JournalEntry.check_in_changeset(%JournalEntry{}, attrs) |> Chico.Repo.insert()

@@ -28,9 +28,9 @@ defmodule Chico.Journals.JournalEntry do
   def check_in_changeset(%__MODULE__{} = journal_entry, params \\ %{}) do
     journal_entry
     |> cast(params, [:check_in, :date, :user_id])
-    |> unique_constraint([:date])
     |> validate_required(:check_in, message: "A check-in message is required")
     |> validate_required([:date, :user_id])
+    |> unique_constraint([:date, :user_id])
     |> assoc_constraint(:user)
   end
 
