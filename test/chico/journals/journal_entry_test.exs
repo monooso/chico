@@ -30,7 +30,7 @@ defmodule Chico.Journals.JournalEntryTest do
       changeset = JournalEntry.check_in_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
-      assert %{check_in: ["can't be blank"]} = errors_on(changeset)
+      assert %{check_in: ["A check-in message is required"]} = errors_on(changeset)
     end
 
     test "check_in cannot be empty", %{attrs: attrs} do
@@ -39,7 +39,7 @@ defmodule Chico.Journals.JournalEntryTest do
       changeset = JournalEntry.check_in_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
-      assert %{check_in: ["can't be blank"]} = errors_on(changeset)
+      assert %{check_in: ["A check-in message is required"]} = errors_on(changeset)
     end
 
     test "check_out is ignored", %{attrs: attrs} do
@@ -114,7 +114,7 @@ defmodule Chico.Journals.JournalEntryTest do
       changeset = JournalEntry.check_out_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
-      assert %{check_out: ["can't be blank"]} = errors_on(changeset)
+      assert %{check_out: ["A check-out message is required"]} = errors_on(changeset)
     end
 
     test "check_out cannot be empty" do
@@ -123,7 +123,7 @@ defmodule Chico.Journals.JournalEntryTest do
       changeset = JournalEntry.check_out_changeset(%JournalEntry{}, attrs)
 
       refute changeset.valid?
-      assert %{check_out: ["can't be blank"]} = errors_on(changeset)
+      assert %{check_out: ["A check-out message is required"]} = errors_on(changeset)
     end
   end
 
