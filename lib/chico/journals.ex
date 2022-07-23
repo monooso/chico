@@ -27,23 +27,30 @@ defmodule Chico.Journals do
   end
 
   @doc """
-  Returns a list of completed journal entries.
+  Returns a list of completed journal entries for the specified user.
   """
-  @spec get_completed_journal_entries() :: [JournalEntry.t()]
-  def get_completed_journal_entries() do
+  @spec get_completed_journal_entries(integer()) :: [JournalEntry.t()]
+  def get_completed_journal_entries(user_id) do
     JournalEntry.base_query()
+    |> JournalEntry.where_user(user_id)
     |> JournalEntry.where_completed()
     |> Repo.all()
   end
 
   @doc """
-  Returns today's journal entry.
+  Returns today's journal entry for the specified user.
 
   Returns a previously created journal entry if one exists, or an empty JournalEntry struct.
   """
-  @spec get_current_journal_entry() :: JournalEntry.t()
-  def get_current_journal_entry() do
-    case Repo.get_by(JournalEntry, date: Date.utc_today()) do
+  @spec get_current_journal_entry(integer()) :: JournalEntry.t()
+  def get_current_journal_entry(user_id) do
+    journal_entry =
+      JournalEntry.base_query()
+      |> JournalEntry.where_user(user_id)
+      |> JournalEntry.where_date(Date.utc_today())
+      |> Repo.one()
+
+    case journal_entry do
       nil -> %JournalEntry{}
       journal_entry -> journal_entry
     end
@@ -64,31 +71,4 @@ defmodule Chico.Journals do
   def journal_entry_check_out_changeset(%JournalEntry{} = journal_entry) do
     JournalEntry.check_out_changeset(journal_entry)
   end
-
-  @doc """
-  Returns a boolean indicating whether the given journal entry is complete.
-  """
-  @spec journal_entry_completed?(JournalEntry.t()) :: boolean()
-  def journal_entry_completed?(%JournalEntry{check_in: check_in, check_out: check_out})
-      when is_binary(check_in) and is_binary(check_out),
-      do: true
-
-  def journal_entry_completed?(_), do: false
-
-  @doc """
-  Returns a boolean indicating whether the given journal entry is in progress.
-  """
-  @spec journal_entry_in_progress?(JournalEntry.t()) :: boolean()
-  def journal_entry_in_progress?(%JournalEntry{check_in: check_in, check_out: nil})
-      when is_binary(check_in),
-      do: true
-
-  def journal_entry_in_progress?(_), do: false
-
-  @doc """
-  Returns a boolean indicating whether the given journal entry is not started.
-  """
-  @spec journal_entry_not_started?(JournalEntry.t()) :: boolean()
-  def journal_entry_not_started?(%JournalEntry{check_in: nil, check_out: nil}), do: true
-  def journal_entry_not_started?(_), do: false
 end
