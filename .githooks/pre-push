@@ -1,0 +1,1 @@
+mix format --check-formatted && mix credo && mix test
