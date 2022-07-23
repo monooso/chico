@@ -34,6 +34,7 @@ defmodule Chico.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.6.5"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.6"},
