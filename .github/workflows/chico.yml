@@ -1,0 +1,68 @@
+name: "chico"
+
+on:
+  pull_request:
+    types: [opened, reopened]
+  push:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      matrix:
+        otp: ["24.2"]
+        elixir: ["1.13.2"]
+
+    # Define the services that we depend upon.
+    services:
+      postgres:
+        image: postgres:14.2
+        env:
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_DB: "chico_test"
+        ports:
+          - 5432:5432
+
+    steps:
+      # Define the action dependencies.
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          elixir-version: ${{matrix.elixir}}
+
+      - name: Cache Elixir deps
+        uses: actions/cache@v1
+        id: deps-cache
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Cache Elixir _build
+        uses: actions/cache@v1
+        id: build-cache
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Fetch dependencies
+        run: mix deps.get
+
+      # Compile the project in every environment. Treat warnings as errors.
+      - name: Compile project
+        run: |
+          MIX_ENV=test mix compile --warnings-as-errors
+          MIX_ENV=dev mix compile --warnings-as-errors
+          MIX_ENV=prod mix compile --warnings-as-errors
+
+      - name: Check code formatting
+        run: mix format --check-formatted
+
+      - name: Run Credo checks
+        run: mix credo list
+
+      - name: Run test suite
+        run: mix test
