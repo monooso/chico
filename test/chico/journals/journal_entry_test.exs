@@ -146,4 +146,27 @@ defmodule Chico.Journals.JournalEntryTest do
       assert %JournalEntry{id: ^entry_id} = Enum.at(entries, 0)
     end
   end
+
+  describe "where_date/2" do
+    test "it limits results to journal entries for the given date" do
+      today = Date.utc_today()
+      yesterday = Date.add(today, -1)
+
+      entry_id = insert(:journal_entry, date: today) |> Map.get(:id)
+      insert(:journal_entry, date: yesterday)
+
+      assert [%JournalEntry{id: ^entry_id}] =
+               JournalEntry.base_query() |> JournalEntry.where_date(today) |> Repo.all()
+    end
+  end
+
+  describe "where_user/2" do
+    test "it limits results to journal entries by the given user" do
+      %{id: entry_id, user_id: user_id} = insert(:journal_entry)
+      insert(:journal_entry)
+
+      assert [%JournalEntry{id: ^entry_id}] =
+               JournalEntry.base_query() |> JournalEntry.where_user(user_id) |> Repo.all()
+    end
+  end
 end

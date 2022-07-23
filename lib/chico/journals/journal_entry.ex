@@ -54,5 +54,18 @@ defmodule Chico.Journals.JournalEntry do
   """
   @spec where_completed(Ecto.Query.t()) :: Ecto.Query.t()
   def where_completed(query),
-    do: from([journal_entry: journal_entry] in query, where: not is_nil(journal_entry.check_out))
+    do: from([journal_entry: je] in query, where: not is_nil(je.check_out))
+
+  @doc """
+  Restricts results to journal entries for the specified date.
+  """
+  @spec where_date(Ecto.Query.t(), Date.t()) :: Ecto.Query.t()
+  def where_date(query, date), do: from([journal_entry: je] in query, where: je.date == ^date)
+
+  @doc """
+  Restricts results to journal entries belonging to the specified user.
+  """
+  @spec where_user(Ecto.Query.t(), integer()) :: Ecto.Query.t()
+  def where_user(query, user_id),
+    do: from([journal_entry: je] in query, where: je.user_id == ^user_id)
 end
