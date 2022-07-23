@@ -13,6 +13,6 @@ defmodule Chico.Repo.Migrations.CreateJournalEntriesTable do
     end
 
     create index(@table_name, [:user_id])
-    create unique_index(@table_name, [:date])
+    create unique_index(@table_name, [:date, :user_id])
   end
 end
