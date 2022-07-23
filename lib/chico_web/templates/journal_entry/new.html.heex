@@ -1,0 +1,18 @@
+<section class="bg-white px-2">
+  <div class="max-w-3xl mx-auto">
+    <.form let={f} for={@changeset} action={Routes.journal_entry_path(@conn, :create)}>
+      <div>
+        <%= label f, :check_in, "Check-in", class: "sr-only" %>
+        <%= textarea f,
+              :check_in,
+              class: "bg-gray-50 border-none h-48 resize-none rounded text-xl w-full placeholder:text-gray-400",
+              placeholder: "What's the plan for today?"
+        %>
+        <%= error_tag f, :check_in %>
+      </div>
+      <div>
+        <%= submit "Check-in", class: "border-2 border-gray-300 px-4 py-3 rounded text-gray-700" %>
+      </div>
+    </.form>
+  </div>
+</section>

@@ -17,12 +17,6 @@ defmodule ChicoWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", ChicoWeb do
-    pipe_through :browser
-
-    live "/", JournalLive
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", ChicoWeb do
   #   pipe_through :api
@@ -57,7 +51,7 @@ defmodule ChicoWeb.Router do
     end
   end
 
-  ## Authentication routes
+  # ----------------------------------------------------------------------------------------------
 
   scope "/", ChicoWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
@@ -88,5 +82,21 @@ defmodule ChicoWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
+  # ----------------------------------------------------------------------------------------------
+
+  scope "/", ChicoWeb do
+    pipe_through [:browser]
+
+    get "/", PageController, :index
+  end
+
+  scope "/u", ChicoWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/", JournalEntryController, :today
+    post "/", JournalEntryController, :create
+    put "/", JournalEntryController, :update
   end
 end
