@@ -9,7 +9,7 @@ defmodule Chico.Journals.JournalEntryTest do
         attrs: %{
           check_in: "Top of the morning.",
           date: Date.utc_today(),
-          user_id: Chico.AccountsFixtures.user_fixture() |> Map.get(:id)
+          user_id: insert(:user) |> Map.get(:id)
         }
       ]
     end
