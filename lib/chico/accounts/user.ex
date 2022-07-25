@@ -8,6 +8,7 @@ defmodule Chico.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :email, :string
     field :hashed_password, :string, redact: true
+    field :public?, :boolean, source: :is_public
     field :journal_slug, :string
     field :password, :string, virtual: true, redact: true
 

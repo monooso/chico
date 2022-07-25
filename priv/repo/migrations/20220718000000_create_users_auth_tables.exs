@@ -9,6 +9,7 @@ defmodule Chico.Repo.Migrations.CreateUsersAuthTables do
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime
       add :journal_slug, :string, null: false
+      add :is_public, :boolean, default: false
       timestamps()
     end
 
