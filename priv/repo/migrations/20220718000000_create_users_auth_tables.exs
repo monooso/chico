@@ -8,10 +8,12 @@ defmodule Chico.Repo.Migrations.CreateUsersAuthTables do
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime
+      add :journal_slug, :string, null: false
       timestamps()
     end
 
     create unique_index(:users, [:email])
+    create unique_index(:users, [:journal_slug])
 
     create table(:users_tokens) do
       add :user_id, references(:users, on_delete: :delete_all), null: false

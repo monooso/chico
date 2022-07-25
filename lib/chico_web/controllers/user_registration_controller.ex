@@ -3,6 +3,7 @@ defmodule ChicoWeb.UserRegistrationController do
 
   alias Chico.Accounts
   alias Chico.Accounts.User
+  alias Chico.Journals.JournalSlug
   alias ChicoWeb.UserAuth
 
   def new(conn, _params) do
@@ -11,6 +12,8 @@ defmodule ChicoWeb.UserRegistrationController do
   end
 
   def create(conn, %{"user" => user_params}) do
+    user_params = Map.put_new(user_params, "journal_slug", JournalSlug.generate())
+
     case Accounts.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =

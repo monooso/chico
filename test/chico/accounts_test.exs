@@ -49,17 +49,22 @@ defmodule Chico.AccountsTest do
   end
 
   describe "register_user/1" do
-    test "requires email and password to be set" do
+    @attrs valid_user_attributes()
+
+    test "requires email, journal_slug, and password to be set" do
       {:error, changeset} = Accounts.register_user(%{})
 
       assert %{
                password: ["can't be blank"],
+               journal_slug: ["can't be blank"],
                email: ["can't be blank"]
              } = errors_on(changeset)
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
+      attrs = %{@attrs | email: "not valid", password: "not valid"}
+
+      {:error, changeset} = Accounts.register_user(attrs)
 
       assert %{
                email: ["must have the @ sign and no spaces"],
@@ -69,24 +74,45 @@ defmodule Chico.AccountsTest do
 
     test "validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
+      attrs = %{@attrs | email: too_long, password: too_long}
+
+      {:error, changeset} = Accounts.register_user(attrs)
+
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "validates email uniqueness" do
       %{email: email} = user_fixture()
-      {:error, changeset} = Accounts.register_user(%{email: email})
+      attrs = %{@attrs | email: email}
+
+      {:error, changeset} = Accounts.register_user(attrs)
+
       assert "has already been taken" in errors_on(changeset).email
 
       # Now try with the upper cased email too, to check that email case is ignored.
-      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
+      attrs = %{@attrs | email: String.upcase(email)}
+
+      {:error, changeset} = Accounts.register_user(attrs)
+
       assert "has already been taken" in errors_on(changeset).email
+    end
+
+    test "validates journal_slug uniqueness" do
+      %{journal_slug: journal_slug} = user_fixture()
+      attrs = %{@attrs | journal_slug: journal_slug}
+
+      {:error, changeset} = Accounts.register_user(attrs)
+
+      assert "has already been taken" in errors_on(changeset).journal_slug
     end
 
     test "registers users with a hashed password" do
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+      attrs = %{@attrs | email: email}
+
+      {:ok, user} = Accounts.register_user(attrs)
+
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -97,7 +123,7 @@ defmodule Chico.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email]
+      assert Enum.sort(changeset.required) == Enum.sort([:email, :journal_slug, :password])
     end
 
     test "allows fields to be set" do
