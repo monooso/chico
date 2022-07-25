@@ -5,10 +5,12 @@ defmodule Chico.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
-    field :email, :string
-    field :password, :string, virtual: true, redact: true
-    field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :email, :string
+    field :hashed_password, :string, redact: true
+    field :public?, :boolean, source: :is_public
+    field :journal_slug, :string
+    field :password, :string, virtual: true, redact: true
 
     timestamps()
   end
@@ -32,9 +34,10 @@ defmodule Chico.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :journal_slug, :password])
     |> validate_email()
     |> validate_password(opts)
+    |> validate_journal_slug()
   end
 
   defp validate_email(changeset) do
@@ -44,6 +47,12 @@ defmodule Chico.Accounts.User do
     |> validate_length(:email, max: 160)
     |> unsafe_validate_unique(:email, Chico.Repo)
     |> unique_constraint(:email)
+  end
+
+  defp validate_journal_slug(changeset) do
+    changeset
+    |> validate_required([:journal_slug])
+    |> unique_constraint(:journal_slug)
   end
 
   defp validate_password(changeset, opts) do

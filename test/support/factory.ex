@@ -24,7 +24,8 @@ defmodule Chico.Factory do
     %Chico.Accounts.User{
       email: sequence(:email, &"john.doe.#{&1}@example.com"),
       hashed_password: Bcrypt.hash_pwd_salt(password),
-      password: password
+      password: password,
+      journal_slug: Chico.Journals.JournalSlug.generate()
     }
   end
 end
